@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+
+	<error-handler name="Global_Error_Handler">
+		<on-error-propagate type="APIKIT:BAD_REQUEST">
+			<ee:transform doc:id="2b6c229a-c7db-42e5-8024-bad844e27d2b">
+				<ee:variables>
+					<ee:set-variable variableName="error">
+						<![CDATA[%dw 2.0
+output application/json encoding="UTF-8"
+---
+{
+	status: "400",
+	message: "Bad request",
+	details: error.description default ""
+}]]>
+					</ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+			<flow-ref doc:name="error-handling-format-pattern" name="sf-error-handling-format-pattern" />
+		</on-error-propagate>
+		<on-error-propagate type="APIKIT:NOT_FOUND">
+			<ee:transform doc:id="97c07ca4-f5a2-4b27-8930-e74ad2575539">
+				<ee:variables>
+					<ee:set-variable variableName="error">
+						<![CDATA[%dw 2.0
+output application/json encoding="UTF-8"
+---
+{
+	status: "404",
+	message: "Resource not found",
+	details: error.description default ""
+}]]>
+					</ee:set-variable>					
+				</ee:variables>
+			</ee:transform>
+			<flow-ref doc:name="error-handling-format-pattern" name="sf-error-handling-format-pattern" />
+		</on-error-propagate>
+		<on-error-propagate type="APIKIT:METHOD_NOT_ALLOWED">
+			<ee:transform doc:id="e4e89004-2f30-4a37-b7ab-d0007e18482c">
+				<ee:variables>
+					<ee:set-variable variableName="error">
+						<![CDATA[%dw 2.0
+output application/json encoding="UTF-8"
+---
+{
+	status: "405",
+	message: "Method not allowed",
+	details: error.description default ""
+}]]>
+					</ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+			<flow-ref doc:name="error-handling-format-pattern" name="sf-error-handling-format-pattern" />
+		</on-error-propagate>
+		<on-error-propagate type="APIKIT:NOT_ACCEPTABLE">
+			<ee:transform doc:id="14c5530f-f5a7-43b6-a26f-43c34dc22d01">
+				<ee:variables>
+					<ee:set-variable variableName="error">
+						<![CDATA[%dw 2.0
+output application/json encoding="UTF-8"
+---
+{
+	status: "406",
+	message: "Not acceptable",
+	details: error.description default ""
+}]]>
+					</ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+			<flow-ref doc:name="error-handling-format-pattern" name="sf-error-handling-format-pattern" />
+		</on-error-propagate>
+		<on-error-propagate type="APIKIT:UNSUPPORTED_MEDIA_TYPE">
+			<ee:transform doc:id="95e6b44e-9c14-42ca-9a03-ce7ccc2cf645">
+				<ee:variables>
+					<ee:set-variable variableName="error">
+						<![CDATA[%dw 2.0
+output application/json encoding="UTF-8"
+---
+{
+	status: "415",
+	message: "Unsupported media type",
+	details: error.description default ""
+}]]>
+					</ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+			<flow-ref doc:name="error-handling-format-pattern" name="sf-error-handling-format-pattern" />
+		</on-error-propagate>
+		<on-error-propagate type="APIKIT:NOT_IMPLEMENTED"
+			doc:name="On Error Propagate" enableNotifications="true"
+			logException="true">
+			<ee:transform doc:id="a2b0c41d-b706-49e1-8bc6-d7df2a325e02">
+				<ee:variables>					
+					<ee:set-variable variableName="error">
+						<![CDATA[%dw 2.0
+output application/json encoding="UTF-8"
+---
+{
+	status: "501",
+	message: "Not Implemented",
+	details: error.description default ""
+}]]>
+					</ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+			<flow-ref doc:name="error-handling-format-pattern" name="sf-error-handling-format-pattern" />
+		</on-error-propagate>
+		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="a89e14c4-0556-4398-aa8a-24f2ff1ef894" type="HTTP:BAD_REQUEST, HTTP:CLIENT_SECURITY, HTTP:CONNECTIVITY, HTTP:FORBIDDEN, HTTP:INTERNAL_SERVER_ERROR, HTTP:METHOD_NOT_ALLOWED, HTTP:NOT_ACCEPTABLE, HTTP:NOT_FOUND, HTTP:PARSING, HTTP:RETRY_EXHAUSTED, HTTP:SERVICE_UNAVAILABLE, HTTP:TIMEOUT, HTTP:TOO_MANY_REQUESTS, HTTP:UNAUTHORIZED, HTTP:UNSUPPORTED_MEDIA_TYPE">
+			<ee:transform doc:name="Transform Message" doc:id="9805d895-fe59-41ec-b91e-7261e5e5c4e7" >
+				<ee:message >
+				</ee:message>
+				<ee:variables >
+					<ee:set-variable variableName="error" ><![CDATA[%dw 2.0
+output application/json encoding="UTF-8"
+---
+{
+	status: attributes.statusCode default "",
+	message: error.errorType,
+	details: error.description default ""
+}]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+			<flow-ref doc:name="error-handling-format-pattern" doc:id="e054623f-7764-4151-8587-e29d1b1d9f0f" name="sf-error-handling-format-pattern"/>
+		</on-error-propagate>
+		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="2b21b700-a75b-449b-a411-ea48caaca79d" type="ANY">
+			<ee:transform doc:id="5af11ef8-acfe-4a7d-b85e-2f6c330ab6c9">
+				<ee:variables>
+					<ee:set-variable variableName="error">
+						<![CDATA[%dw 2.0
+output application/json encoding="UTF-8"
+---
+{
+	status: "500",
+	message: "Server Error",
+	details: error.description default ""
+}
+]]>
+					</ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+			<flow-ref doc:name="error-handling-format-pattern" name="sf-error-handling-format-pattern" />
+		</on-error-propagate>
+
+
+
+           
+        
+</error-handler>
+	<sub-flow name="sf-error-handling-format-pattern" doc:id="21b013c2-97b8-4a74-96fc-40a4648ef49e" >
+		<logger level="INFO" doc:name="Logger" doc:id="89a4fa1b-a729-4bdf-bf5c-e0a66fb71489" message="#[output application/json 
+---
+{
+ 	errorMessage: vars.error.message,
+ 	errorDetails: vars.error.details
+}]"/>
+		<ee:transform doc:name="Transform Message" doc:id="3abdf6cb-8ef7-4587-aa56-68acfd3e4f33" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json  encoding="UTF-8"
+---
+{
+	"error":{
+	message: vars.error.message,
+	details: vars.error.details
+    }
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</sub-flow>
+	
+</mule>
+	

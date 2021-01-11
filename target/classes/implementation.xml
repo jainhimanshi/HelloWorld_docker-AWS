@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:tls="http://www.mulesoft.org/schema/mule/tls" xmlns:file="http://www.mulesoft.org/schema/mule/file"
+	xmlns:email="http://www.mulesoft.org/schema/mule/email"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/email http://www.mulesoft.org/schema/mule/email/current/mule-email.xsd
+http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd
+http://www.mulesoft.org/schema/mule/tls http://www.mulesoft.org/schema/mule/tls/current/mule-tls.xsd">
+	<file:config name="File_Config1" doc:name="File Config" doc:id="cbe7047e-06c7-46a3-9be5-b5dd4b1e8264" >
+		<file:connection workingDir="D:\step_up_program\reports" />
+	</file:config>
+	<email:smtp-config name="Email_SMTP" doc:name="Email SMTP" doc:id="d461a45a-40ca-4974-8d39-459337657508" >
+		<email:smtps-connection host="smtp.gmail.com" user="himanshi.jain@apisero.com" password="464001Apisero@" >
+			<tls:context >
+				<tls:trust-store insecure="true" />
+			</tls:context>
+		</email:smtps-connection>
+	</email:smtp-config>
+	<flow name="sf-helloWorld" doc:id="cd0733af-e7f4-41a2-8c45-3d63779e8195" >
+		<logger level="INFO" doc:name="LOG- Flow starts" doc:id="95b1bbb5-cb09-4f8e-95da-bbdcc0fb803c" message="Flow starts !!!"/>
+		<ee:transform xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/email http://www.mulesoft.org/schema/mule/email/current/mule-email.xsd http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd" doc:name="Hello world">
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+"Hello world!!!"]]></ee:set-payload>
+            </ee:message>
+        </ee:transform>
+		<logger level="INFO" doc:name="LOG-Flow ends" doc:id="0006795f-6c2f-4ee7-83ea-6a9170f45add" message="Flow ends!!"/>
+		<error-handler >
+			<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="18b03945-15c8-4d55-8627-1858d0f3478f" >
+				<logger level="INFO" doc:name="Logger" doc:id="68eaa310-50bd-4edd-967d-4a3ad7df1315" message="Exception occured in helloworld!!!!!!"/>
+			</on-error-propagate>
+		</error-handler>
+	</flow>
+</mule>

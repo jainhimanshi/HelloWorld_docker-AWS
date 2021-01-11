@@ -1,0 +1,32 @@
+{
+  "configs": [
+    "implementation.xml",
+    "global.xml",
+    "api-kit-router.xml",
+    "global-error-handler.xml"
+  ],
+  "secureProperties": [],
+  "redeploymentEnabled": true,
+  "name": "com.mycompany:cicdpipeline:1.0.0-SNAPSHOT",
+  "minMuleVersion": "4.3.0-20200824",
+  "requiredProduct": "MULE_EE",
+  "classLoaderModelLoaderDescriptor": {
+    "id": "mule",
+    "attributes": {
+      "exportedPackages": [],
+      "exportedResources": [
+        "api/cicd_practice.raml",
+        "api-kit-router.xml",
+        "config.yaml",
+        "global-error-handler.xml",
+        "global.xml",
+        "implementation.xml",
+        "log4j2.xml"
+      ]
+    }
+  },
+  "bundleDescriptorLoader": {
+    "id": "mule",
+    "attributes": {}
+  }
+}
